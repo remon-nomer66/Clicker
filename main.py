@@ -1,4 +1,5 @@
-import pyautogui
+from pynput.mouse import Button, Controller
+import threading, time
 import tkinter as tk
 
 FONT = ("", 10)
@@ -9,12 +10,13 @@ class Base():
         self.app = tk.Tk()
         self.app.geometry("720x720")
         self.app.minsize(720,720)
-        self.app.title("MOUSER")
+        self.app.title("Clicker")
         self.select = Select(self.app)
         self.app.mainloop()
 
 class Select():
     def __init__(self,app):
+        self.e = threading.Event()
         self.app=app
         self.create_frame()
         self.create_widget()
@@ -41,7 +43,7 @@ class Select():
             master,
             height=6,
             width=12,
-            text="MOUSER",
+            text="Clicker",
             font=("", 30)
         )
         self.text0.grid(column=0,row=0)
@@ -93,8 +95,12 @@ class Select():
         self.button0.pack()
 
     def hits(self):
-        # pyautogui.dragTo(100, 300, duration=2, button="left")
-        pyautogui.click(button="left", clicks=5, interval=TEXT)
+        while not self.e.isSet():        # e.set()が実行されるまでFalseを返す
+            Controller().click(Button.left)     # 左ボタンをクリックする
+            time.sleep(10)   # 1秒待ち
+        threading.Thread(target=self.hits, args=(self.e,)).start()
+        # input()     # 入力待ち
+        # self.e.set() 
 
 if __name__ == "__main__":
     base = Base()
