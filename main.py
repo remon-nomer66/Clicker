@@ -1,6 +1,8 @@
 from pynput.mouse import Button, Controller
 import threading, time
 import tkinter as tk
+import pyautogui
+
 
 FONT = ("", 10)
 TEXT = 0
@@ -97,7 +99,16 @@ class Select():
     def hits(self):
         while not self.e.isSet():        # e.set()が実行されるまでFalseを返す
             Controller().click(Button.left)     # 左ボタンをクリックする
-            time.sleep(10)   # 1秒待ち
+            pyautogui.moveTo(1100, 700)
+            time.sleep(10)
+            Controller().click(Button.left)
+            screenshot = pyautogui.screenshot(
+                region = (1115,740,45,20)
+            )
+            screenshot.save('./mouser/nop/screenshot.png')
+
+            pyautogui.moveTo(1670, 830)
+            time.sleep(1200)   # 1秒待ち
         threading.Thread(target=self.hits, args=(self.e,)).start()
         # input()     # 入力待ち
         # self.e.set() 
